@@ -1,4 +1,5 @@
 const Issue = require("../models/issue");
+const mongoose = require('mongoose');
 
 const postQuery = (req, res) => {
 	
@@ -38,6 +39,7 @@ const postQuery = (req, res) => {
 
 const putQuery = (req, res) => {
 	
+	
 	let inpLength = Object.keys(req.body).length;
 	
 	if (inpLength == 1) {
@@ -50,8 +52,8 @@ const putQuery = (req, res) => {
 	
 	let _id = req.body._id;
 	
-	if (!_id) {
-		res.json({error: "missing _id"});
+	if (!mongoose.Types.ObjectId.isValid(_id)) {
+		res.json({error: "could not update"});
 	} else {
 	
 	Issue.findById(_id)
@@ -103,6 +105,10 @@ const deleteQuery = (req, res) => {
 		res.json({error: "missing _id"});
 	} else {
 		
+		if(!mongoose.Types.ObjectId.isValid(_id)){
+			res.json({error: "could not delete"});
+		} else {
+		
 		Issue.findById(_id)
 		.then((result) => {
 			if (!result) {
@@ -119,6 +125,7 @@ const deleteQuery = (req, res) => {
 		})
 		.catch((err) => console.log(err));
 		
+		}
 	}
 };
 
